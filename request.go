@@ -1,13 +1,12 @@
 package socks5
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
 	"strconv"
 	"strings"
-
-	"golang.org/x/net/context"
 )
 
 const (
@@ -117,7 +116,9 @@ func NewRequest(bufConn io.Reader) (*Request, error) {
 
 // handleRequest is used for request processing after authentication
 func (s *Server) handleRequest(req *Request, conn conn) error {
-	ctx := context.Background()
+	ctx := &scontext{
+		AuthContext: req.AuthContext,
+	}
 
 	// Resolve the address if we have a FQDN
 	dest := req.DestAddr
