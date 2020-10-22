@@ -20,8 +20,7 @@ func (ctx *Context) Err() error {
 }
 
 func (ctx *Context) Value(key interface{}) interface{} {
-
-	return nil
+	return ctx.AuthContext.Payload[key.(string)]
 }
 
 func (ctx *Context) String() string {
