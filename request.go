@@ -36,7 +36,7 @@ var (
 
 // AddressRewriter is used to rewrite a destination transparently
 type AddressRewriter interface {
-	Rewrite(ctx context.Context, request *Request) (context.Context, *AddrSpec)
+	Rewrite(ctx context.Context, request *Request) *AddrSpec
 }
 
 // AddrSpec is used to return the target AddrSpec
@@ -116,28 +116,27 @@ func NewRequest(bufConn io.Reader) (*Request, error) {
 
 // handleRequest is used for request processing after authentication
 func (s *Server) handleRequest(req *Request, conn conn) error {
-	ctx := &scontext{
+	ctx := &Context{
 		AuthContext: req.AuthContext,
 	}
 
 	// Resolve the address if we have a FQDN
 	dest := req.DestAddr
 	if dest.FQDN != "" {
-		ctx_, addr, err := s.config.Resolver.Resolve(ctx, dest.FQDN)
+		addr, err := s.config.Resolver.Resolve(ctx, dest.FQDN)
 		if err != nil {
 			if err := sendReply(conn, hostUnreachable, nil); err != nil {
 				return fmt.Errorf("Failed to send reply: %v", err)
 			}
 			return fmt.Errorf("Failed to resolve destination '%v': %v", dest.FQDN, err)
 		}
-		ctx = ctx_
 		dest.IP = addr
 	}
 
 	// Apply any address rewrites
 	req.realDestAddr = req.DestAddr
 	if s.config.Rewriter != nil {
-		ctx, req.realDestAddr = s.config.Rewriter.Rewrite(ctx, req)
+		req.realDestAddr = s.config.Rewriter.Rewrite(ctx, req)
 	}
 
 	// Switch on the command
@@ -159,13 +158,11 @@ func (s *Server) handleRequest(req *Request, conn conn) error {
 // handleConnect is used to handle a connect command
 func (s *Server) handleConnect(ctx context.Context, conn conn, req *Request) error {
 	// Check if this is allowed
-	if ctx_, ok := s.config.Rules.Allow(ctx, req); !ok {
+	if ok := s.config.Rules.Allow(ctx, req); !ok {
 		if err := sendReply(conn, ruleFailure, nil); err != nil {
 			return fmt.Errorf("Failed to send reply: %v", err)
 		}
 		return fmt.Errorf("Connect to %v blocked by rules", req.DestAddr)
-	} else {
-		ctx = ctx_
 	}
 
 	// Attempt to connect
@@ -217,13 +214,11 @@ func (s *Server) handleConnect(ctx context.Context, conn conn, req *Request) err
 // handleBind is used to handle a connect command
 func (s *Server) handleBind(ctx context.Context, conn conn, req *Request) error {
 	// Check if this is allowed
-	if ctx_, ok := s.config.Rules.Allow(ctx, req); !ok {
+	if ok := s.config.Rules.Allow(ctx, req); !ok {
 		if err := sendReply(conn, ruleFailure, nil); err != nil {
 			return fmt.Errorf("Failed to send reply: %v", err)
 		}
 		return fmt.Errorf("Bind to %v blocked by rules", req.DestAddr)
-	} else {
-		ctx = ctx_
 	}
 
 	// TODO: Support bind
@@ -236,15 +231,12 @@ func (s *Server) handleBind(ctx context.Context, conn conn, req *Request) error 
 // handleAssociate is used to handle a connect command
 func (s *Server) handleAssociate(ctx context.Context, conn conn, req *Request) error {
 	// Check if this is allowed
-	if ctx_, ok := s.config.Rules.Allow(ctx, req); !ok {
+	if ok := s.config.Rules.Allow(ctx, req); !ok {
 		if err := sendReply(conn, ruleFailure, nil); err != nil {
 			return fmt.Errorf("Failed to send reply: %v", err)
 		}
 		return fmt.Errorf("Associate to %v blocked by rules", req.DestAddr)
-	} else {
-		ctx = ctx_
 	}
-
 	// TODO: Support associate
 	if err := sendReply(conn, commandNotSupported, nil); err != nil {
 		return fmt.Errorf("Failed to send reply: %v", err)

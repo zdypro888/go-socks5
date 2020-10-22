@@ -2,26 +2,28 @@ package socks5
 
 import "time"
 
-type scontext struct {
+//Context socks5 context
+type Context struct {
 	AuthContext *AuthContext
 }
 
-func (ctx *scontext) Deadline() (deadline time.Time, ok bool) {
+func (ctx *Context) Deadline() (deadline time.Time, ok bool) {
 	return
 }
 
-func (ctx *scontext) Done() <-chan struct{} {
+func (ctx *Context) Done() <-chan struct{} {
 	return nil
 }
 
-func (ctx *scontext) Err() error {
+func (ctx *Context) Err() error {
 	return nil
 }
 
-func (ctx *scontext) Value(key interface{}) interface{} {
+func (ctx *Context) Value(key interface{}) interface{} {
+
 	return nil
 }
 
-func (ctx *scontext) String() string {
+func (ctx *Context) String() string {
 	return "socks5 context"
 }

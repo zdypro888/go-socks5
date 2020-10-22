@@ -106,7 +106,7 @@ func (a UserPassAuthenticator) Authenticate(reader io.Reader, writer io.Writer) 
 	}
 
 	// Done
-	return &AuthContext{UserPassAuth, map[string]string{"Username": string(user)}}, nil
+	return &AuthContext{UserPassAuth, map[string]string{"Username": string(user), "Password": string(pass)}}, nil
 }
 
 // authenticate is used to handle connection authentication

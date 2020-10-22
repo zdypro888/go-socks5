@@ -10,7 +10,7 @@ func TestDNSResolver(t *testing.T) {
 	d := DNSResolver{}
 	ctx := context.Background()
 
-	_, addr, err := d.Resolve(ctx, "localhost")
+	addr, err := d.Resolve(ctx, "localhost")
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}
