@@ -2,118 +2,62 @@ package socks5
 
 import (
 	"bytes"
+	"errors"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/thinkgos/go-socks5/statute"
 )
 
 func TestNoAuth(t *testing.T) {
 	req := bytes.NewBuffer(nil)
-	req.Write([]byte{1, NoAuth})
-	var resp bytes.Buffer
+	rsp := new(bytes.Buffer)
+	cator := NoAuthAuthenticator{}
 
-	s, _ := New(&Config{})
-	ctx, err := s.authenticate(&resp, req)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
-
-	if ctx.Method != NoAuth {
-		t.Fatal("Invalid Context Method")
-	}
-
-	out := resp.Bytes()
-	if !bytes.Equal(out, []byte{socks5Version, NoAuth}) {
-		t.Fatalf("bad: %v", out)
-	}
+	ctx, err := cator.Authenticate(req, rsp, "")
+	require.NoError(t, err)
+	assert.Equal(t, statute.MethodNoAuth, ctx.Method)
+	assert.Equal(t, []byte{statute.VersionSocks5, statute.MethodNoAuth}, rsp.Bytes())
 }
 
 func TestPasswordAuth_Valid(t *testing.T) {
-	req := bytes.NewBuffer(nil)
-	req.Write([]byte{2, NoAuth, UserPassAuth})
-	req.Write([]byte{1, 3, 'f', 'o', 'o', 3, 'b', 'a', 'r'})
-	var resp bytes.Buffer
-
-	cred := StaticCredentials{
-		"foo": "bar",
+	req := bytes.NewBuffer([]byte{1, 3, 'f', 'o', 'o', 3, 'b', 'a', 'r'})
+	rsp := new(bytes.Buffer)
+	cator := UserPassAuthenticator{
+		StaticCredentials{
+			"foo": "bar",
+		},
 	}
 
-	cator := UserPassAuthenticator{Credentials: cred}
+	ctx, err := cator.Authenticate(req, rsp, "")
+	require.NoError(t, err)
+	assert.Equal(t, statute.MethodUserPassAuth, ctx.Method)
 
-	s, _ := New(&Config{AuthMethods: []Authenticator{cator}})
+	val, ok := ctx.Payload["username"]
+	require.True(t, ok)
+	require.Equal(t, "foo", val)
 
-	ctx, err := s.authenticate(&resp, req)
-	if err != nil {
-		t.Fatalf("err: %v", err)
-	}
+	val, ok = ctx.Payload["password"]
+	require.True(t, ok)
+	require.Equal(t, "bar", val)
 
-	if ctx.Method != UserPassAuth {
-		t.Fatal("Invalid Context Method")
-	}
-
-	val, ok := ctx.Payload["Username"]
-	if !ok {
-		t.Fatal("Missing key Username in auth context's payload")
-	}
-
-	if val != "foo" {
-		t.Fatal("Invalid Username in auth context's payload")
-	}
-
-	out := resp.Bytes()
-	if !bytes.Equal(out, []byte{socks5Version, UserPassAuth, 1, authSuccess}) {
-		t.Fatalf("bad: %v", out)
-	}
+	assert.Equal(t, []byte{statute.VersionSocks5, statute.MethodUserPassAuth, 1, statute.AuthSuccess}, rsp.Bytes())
 }
 
 func TestPasswordAuth_Invalid(t *testing.T) {
-	req := bytes.NewBuffer(nil)
-	req.Write([]byte{2, NoAuth, UserPassAuth})
-	req.Write([]byte{1, 3, 'f', 'o', 'o', 3, 'b', 'a', 'z'})
-	var resp bytes.Buffer
-
-	cred := StaticCredentials{
-		"foo": "bar",
-	}
-	cator := UserPassAuthenticator{Credentials: cred}
-	s, _ := New(&Config{AuthMethods: []Authenticator{cator}})
-
-	ctx, err := s.authenticate(&resp, req)
-	if err != UserAuthFailed {
-		t.Fatalf("err: %v", err)
+	req := bytes.NewBuffer([]byte{1, 3, 'f', 'o', 'o', 3, 'b', 'a', 'z'})
+	rsp := new(bytes.Buffer)
+	cator := UserPassAuthenticator{
+		StaticCredentials{
+			"foo": "bar",
+		},
 	}
 
-	if ctx != nil {
-		t.Fatal("Invalid Context Method")
-	}
+	ctx, err := cator.Authenticate(req, rsp, "")
+	require.True(t, errors.Is(err, statute.ErrUserAuthFailed))
+	require.Nil(t, ctx)
 
-	out := resp.Bytes()
-	if !bytes.Equal(out, []byte{socks5Version, UserPassAuth, 1, authFailure}) {
-		t.Fatalf("bad: %v", out)
-	}
-}
-
-func TestNoSupportedAuth(t *testing.T) {
-	req := bytes.NewBuffer(nil)
-	req.Write([]byte{1, NoAuth})
-	var resp bytes.Buffer
-
-	cred := StaticCredentials{
-		"foo": "bar",
-	}
-	cator := UserPassAuthenticator{Credentials: cred}
-
-	s, _ := New(&Config{AuthMethods: []Authenticator{cator}})
-
-	ctx, err := s.authenticate(&resp, req)
-	if err != NoSupportedAuth {
-		t.Fatalf("err: %v", err)
-	}
-
-	if ctx != nil {
-		t.Fatal("Invalid Context Method")
-	}
-
-	out := resp.Bytes()
-	if !bytes.Equal(out, []byte{socks5Version, noAcceptable}) {
-		t.Fatalf("bad: %v", out)
-	}
+	assert.Equal(t, []byte{statute.VersionSocks5, statute.MethodUserPassAuth, 1, statute.AuthFailure}, rsp.Bytes())
 }
