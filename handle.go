@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 // AddressRewriter is used to rewrite a destination transparently

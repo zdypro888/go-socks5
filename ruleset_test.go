@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 func TestPermitCommand(t *testing.T) {

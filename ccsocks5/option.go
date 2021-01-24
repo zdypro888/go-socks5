@@ -3,7 +3,7 @@ package ccsocks5
 import (
 	"golang.org/x/net/proxy"
 
-	"github.com/thinkgos/go-socks5/bufferpool"
+	"github.com/zdypro888/go-socks5/bufferpool"
 )
 
 // Option user's option of the client

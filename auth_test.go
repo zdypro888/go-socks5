@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 func TestNoAuth(t *testing.T) {

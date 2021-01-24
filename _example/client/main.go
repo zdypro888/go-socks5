@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/thinkgos/go-socks5/ccsocks5"
+	"github.com/zdypro888/go-socks5/ccsocks5"
 )
 
 func main() {

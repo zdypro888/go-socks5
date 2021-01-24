@@ -1,13 +1,13 @@
 # go-socks5 
 
-[![GoDoc](https://godoc.org/github.com/thinkgos/go-socks5?status.svg)](https://godoc.org/github.com/thinkgos/go-socks5)
-[![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/thinkgos/go-socks5?tab=doc)
-[![Build Status](https://travis-ci.org/thinkgos/go-socks5.svg?branch=master)](https://travis-ci.org/thinkgos/go-socks5)
-![Action Status](https://github.com/thinkgos/go-socks5/workflows/Go/badge.svg)
-[![codecov](https://codecov.io/gh/thinkgos/go-socks5/branch/master/graph/badge.svg)](https://codecov.io/gh/thinkgos/go-socks5)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thinkgos/go-socks5)](https://goreportcard.com/report/github.com/thinkgos/go-socks5)
-[![License](https://img.shields.io/github/license/thinkgos/go-socks5)](https://github.com/thinkgos/go-socks5/raw/master/LICENSE)
-[![Tag](https://img.shields.io/github/v/tag/thinkgos/go-socks5)](https://github.com/thinkgos/go-socks5/tags)
+[![GoDoc](https://godoc.org/github.com/zdypro888/go-socks5?status.svg)](https://godoc.org/github.com/zdypro888/go-socks5)
+[![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/zdypro888/go-socks5?tab=doc)
+[![Build Status](https://travis-ci.org/zdypro888/go-socks5.svg?branch=master)](https://travis-ci.org/zdypro888/go-socks5)
+![Action Status](https://github.com/zdypro888/go-socks5/workflows/Go/badge.svg)
+[![codecov](https://codecov.io/gh/zdypro888/go-socks5/branch/master/graph/badge.svg)](https://codecov.io/gh/zdypro888/go-socks5)
+[![Go Report Card](https://goreportcard.com/badge/github.com/zdypro888/go-socks5)](https://goreportcard.com/report/github.com/zdypro888/go-socks5)
+[![License](https://img.shields.io/github/license/zdypro888/go-socks5)](https://github.com/zdypro888/go-socks5/raw/master/LICENSE)
+[![Tag](https://img.shields.io/github/v/tag/zdypro888/go-socks5)](https://github.com/zdypro888/go-socks5/tags)
 
 Provides the `socks5` package that implements a [SOCKS5](http://en.wikipedia.org/wiki/SOCKS).
 SOCKS (Secure Sockets) is used to route traffic between a client and server through
@@ -39,13 +39,13 @@ The package still needs the following:
 
 Use go get.
 ```bash
-    go get github.com/thinkgos/go-socks5
+    go get github.com/zdypro888/go-socks5
 ```
 
 Then import the socks5 server package into your own code.
 
 ```bash
-    import "github.com/thinkgos/go-socks5"
+    import "github.com/zdypro888/go-socks5"
 ```
 
 or  
@@ -53,12 +53,12 @@ or
 import the socks5 client package into your own code.
 
 ```bash
-    import "github.com/thinkgos/go-socks5/ccsocks5"
+    import "github.com/zdypro888/go-socks5/ccsocks5"
 ```
 
 ### Example
 
-Below is a simple example of usage, more see [example](https://github.com/thinkgos/go-socks5/tree/master/_example)
+Below is a simple example of usage, more see [example](https://github.com/zdypro888/go-socks5/tree/master/_example)
 
 
 ```go

@@ -3,7 +3,7 @@ package socks5
 import (
 	"context"
 
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 // RuleSet is used to provide custom rules to allow or prohibit actions

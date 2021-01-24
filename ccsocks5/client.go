@@ -7,8 +7,8 @@ import (
 
 	"golang.org/x/net/proxy"
 
-	"github.com/thinkgos/go-socks5/bufferpool"
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/bufferpool"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 // Client is socks5 client.

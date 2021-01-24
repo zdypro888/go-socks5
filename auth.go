@@ -3,7 +3,7 @@ package socks5
 import (
 	"io"
 
-	"github.com/thinkgos/go-socks5/statute"
+	"github.com/zdypro888/go-socks5/statute"
 )
 
 // AuthContext A Request encapsulates authentication state provided
